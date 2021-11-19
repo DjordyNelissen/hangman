@@ -1,0 +1,116 @@
+﻿<Window x:Class="Galgje.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Galgje" xmlns:controls="clr-namespace:Galgje.Controls"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="600" Width="800">
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="OverridesDefaultStyle" Value="True" />
+            <Setter Property="Background" Value="#FF253766"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Grid Background="{TemplateBinding Background}">
+                            <ContentPresenter x:Name="MyContentPresenter"
+                                      Content="{TemplateBinding Content}"
+                                      HorizontalAlignment="Center" 
+                                      VerticalAlignment="Center" />
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value=".7" />
+                                <Setter Property="Foreground" Value="Black" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#FF2E447E" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <Grid Background="#FAFAFA">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20" />
+            <RowDefinition Height="120" />
+            <RowDefinition Height="20" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="50" />
+            <RowDefinition Height="100" />
+            <RowDefinition Height="50" />
+            <RowDefinition Height="20" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <!--HeaderText-->
+        <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock x:Name="LabelHeader" Text="Geef een geheim woord in" Visibility="Visible" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="30" FontWeight="Bold" />
+        </StackPanel>
+        <!--End HeaderText-->
+        <!--GameBoard-->
+        <StackPanel VerticalAlignment="Bottom" Grid.Row="3" Grid.Column="0" MaxWidth="700" Margin="0,30">
+            <controls:AlignWrapPanel x:Name="GamePanel"  HorizontalContentAlignment="Center" />
+        </StackPanel>
+        <!--End GameBoard-->
+        <!--Statistics-->
+        <Grid x:Name="Statistics" Visibility="Hidden" Grid.Row="4" Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="1*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="11*" />
+                <ColumnDefinition Width="2*" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+                <Label Content="Aantal levens:" />
+                <Label x:Name="LabelLives" Content="" />
+            </StackPanel>
+            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+                <Label Content="Foutieve letters:" />
+                <Label x:Name="LabelBadGuessesCharacters" Content="" />
+            </StackPanel>
+        </Grid>
+        <!--End Statistics-->
+        <!--InputField-->
+        <Grid Grid.Row="5" Grid.Column="0" VerticalAlignment="Top">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="11*" />
+                <ColumnDefinition Width="2* "/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Row="0" Grid.Column="1" >
+                <TextBox Padding="5,5,5,5" TextChanged="InputField_TextChanged" KeyDown="InputField_KeyDown" x:Name="InputField" Background="Transparent" BorderBrush="#EEE" FontSize="30" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderThickness="0,0,0,1"/>
+                <Label Visibility="Hidden" Margin="0,5,0,0" HorizontalContentAlignment="Center" x:Name="LabelError" Foreground="#FFAE1B1B" />
+            </StackPanel>
+        </Grid>
+        <!--End InputField-->
+        <!--Buttons-->
+        <Grid Grid.Row="6" Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="5*" />
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="5*" />
+                <ColumnDefinition Width="2*" />
+            </Grid.ColumnDefinitions>
+            <Button x:Name="BtnGuess" Click="BtnGuess_Click" Visibility="Hidden" Grid.Row="0" Grid.Column="1" Content="Raad" FontSize="18" />
+            <Button x:Name="BtnReset" Click="BtnReset_Click" IsEnabled="False" Grid.Row="0" Grid.Column="3" Content="Nieuw spel" FontSize="18" />
+            <Button x:Name="BtnStart" Click="BtnStart_Click" IsEnabled="False" Grid.Row="0" Grid.Column="1" Content="Verberg woord" FontSize="18" />
+        </Grid>
+        <!--End Buttons-->
+    </Grid>
+</Window>
