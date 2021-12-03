@@ -37,17 +37,41 @@ namespace Galgje
         #region Handlers
         private void BtnStart_Click(object sender, RoutedEventArgs e)
         {
+            SetActiveBorder(sender as Label);
             StartGame();
+            SetDefaultBorder(sender as Label);
         }
         private void BtnReset_Click(object sender, RoutedEventArgs e)
         {
+            SetActiveBorder(sender as Label);
             ResetGame();
+            SetDefaultBorder(sender as Label);
         }
 
         private void BtnGuess_Click(object sender, RoutedEventArgs e)
         {
             string guess = InputField.Text.ToLower();
             Guess(guess);
+            SetDefaultBorder(sender as Label);
+        }
+
+        private void Btn_Hover(object sender, MouseEventArgs e)
+        {
+            SetActiveBorder(sender as Label);
+        }
+        private void Btn_ResetHover(object sender, MouseEventArgs e)
+        {
+            SetDefaultBorder(sender as Label);
+        }
+
+        private void SetActiveBorder(Label label)
+        {
+            label.BorderBrush = Brushes.Black;
+        }
+
+        private void SetDefaultBorder(Label label)
+        {
+            label.BorderBrush = new SolidColorBrush(Color.FromRgb(175,175,175));
         }
 
         private void InputField_TextChanged(object sender, TextChangedEventArgs e)
