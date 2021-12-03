@@ -160,6 +160,9 @@ namespace Galgje
 
         private void ResetGame()
         {
+
+            HangmanImage.Visibility = Visibility.Hidden;
+
             BtnGuess.Visibility = Visibility.Hidden;
             BtnStart.Visibility = Visibility.Visible;
 
@@ -245,6 +248,7 @@ namespace Galgje
 
             LabelLives.Content = Lives;
             ClearAndFocusInput();
+            SetCorrectImage();
 
             if (Lives <= 0)
             {
@@ -281,6 +285,13 @@ namespace Galgje
                 Lives--;
                 LabelBadGuessesCharacters.Content = $"{LabelBadGuessesCharacters.Content} {character}";
             }
+        }
+
+        private void SetCorrectImage()
+        {
+            var step = 10 - Lives;
+            HangmanImage.Visibility = Visibility.Visible;
+            HangmanImage.Source = new BitmapImage(new Uri($@"/Images/hangman_{step}.png", UriKind.Relative));
         }
 
         private List<GameCharLabel> FillCharacter(char character)
