@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace Galgje
 {
@@ -25,6 +26,10 @@ namespace Galgje
         private string HiddenWord { get; set; }
         private int MinWordCharacters { get; set; } = 3;
         private int Lives { get; set; } = 10;
+        private int Seconds { get; set; } = 10;
+        private int TimerCount { get; set; } = 10;
+
+        private DispatcherTimer Timer { get; set; } = new DispatcherTimer();
         private List<GameCharLabel> GameCharacterLabels { get; } = new List<GameCharLabel>();
         private List<string> Guesses { get; } = new List<string>();
 
@@ -32,7 +37,48 @@ namespace Galgje
         {
             InitializeComponent();
             InputField.Focus();
+            Timer.Interval = TimeSpan.FromSeconds(1);
+            Timer.Tick += Timer_Tick;
         }
+
+        #region Timer
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            if(TimerCount <= 0)
+            {
+                GameGrid.Background = new SolidColorBrush(Color.FromRgb(250, 250, 250));
+                ResetAndStartTimer();
+                InputField.IsEnabled = true;
+                InputField.Clear();
+                InputField.Focus();
+                return;
+            }
+
+            TimerCount--;
+            LabelTimeLimit.Content = TimerCount.ToString();
+
+            if(TimerCount <= 0)
+            {
+                GameGrid.Background = new SolidColorBrush(Color.FromRgb(255, 80, 80));
+                InputField.IsEnabled = false;
+                Lives--;
+                UpdateAfterGuess();
+            }
+        }
+        private void ResetTimer()
+        {
+            Timer.Stop();
+            TimerCount = 10;
+            LabelTimeLimit.Content = TimerCount;
+            GameGrid.Background = new SolidColorBrush(Color.FromRgb(250, 250, 250));
+        }
+
+        private void ResetAndStartTimer()
+        {
+            ResetTimer();
+            Timer.Start();
+        }
+        #endregion
 
         #region Handlers
         private void BtnStart_Click(object sender, RoutedEventArgs e)
@@ -156,6 +202,7 @@ namespace Galgje
 
             ClearAndFocusInput();
             CreateGamePanel();
+            ResetAndStartTimer();
         }
 
         private void ResetGame()
@@ -183,10 +230,12 @@ namespace Galgje
             GamePanel.Children.Clear();
 
             ClearAndFocusInput();
+            ResetTimer();
         }
 
         private void EndGame(bool won)
         {
+            ResetTimer();
             BtnGuess.IsEnabled = false;
             InputField.IsEnabled = false;
 
@@ -210,7 +259,7 @@ namespace Galgje
                 {
                     foreach (var label in filledLabels)
                     {
-                        label.Foreground = Brushes.Red;
+                        label.Foreground = won ? Brushes.Black : Brushes.Red;
                     }
                 }
             }
@@ -236,6 +285,7 @@ namespace Galgje
             }
 
             Guesses.Add(guess);
+            ResetAndStartTimer();
 
             if (guess.Length > 1)
             {
@@ -246,15 +296,19 @@ namespace Galgje
                 GuessCharacter(guess);
             }
 
-            LabelLives.Content = Lives;
             ClearAndFocusInput();
+            UpdateAfterGuess();
+        }
+
+        private void UpdateAfterGuess()
+        {
+            LabelLives.Content = Lives;
             SetCorrectImage();
 
             if (Lives <= 0)
             {
                 EndGame(false);
             }
-
         }
 
         private void GuessWord(string guess)

@@ -19,7 +19,7 @@
             <Setter Property="Background" Value="#EFEFEF" />
         </Style>
     </Window.Resources>
-    <Grid Background="#FAFAFA">
+    <Grid x:Name="GameGrid" Background="#FAFAFA">
         <Grid.RowDefinitions>
             <RowDefinition Height="10" />
             <RowDefinition Height="80" />
@@ -54,7 +54,7 @@
             <!--Statistics-->
             <StackPanel Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Center" MaxWidth="400">
                 <Viewbox Stretch="Uniform">
-                    <Grid x:Name="Statistics" Visibility="Visible">
+                    <Grid x:Name="Statistics" Visibility="Hidden">
                         <Grid.RowDefinitions>
                             <RowDefinition />
                             <RowDefinition />
