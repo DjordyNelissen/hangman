@@ -22,7 +22,7 @@ namespace Galgje
     /// </summary>
     public partial class MainWindow : Window
     {
-
+        #region Properties
         private string HiddenWord { get; set; }
         private int MinWordCharacters { get; set; } = 3;
         private int Lives { get; set; } = 10;
@@ -32,7 +32,9 @@ namespace Galgje
         private DispatcherTimer Timer { get; set; } = new DispatcherTimer();
         private List<GameCharLabel> GameCharacterLabels { get; } = new List<GameCharLabel>();
         private List<string> Guesses { get; } = new List<string>();
+        #endregion
 
+        #region Constructors
         public MainWindow()
         {
             InitializeComponent();
@@ -40,6 +42,7 @@ namespace Galgje
             Timer.Interval = TimeSpan.FromSeconds(1);
             Timer.Tick += Timer_Tick;
         }
+        #endregion
 
         #region Timer
         private void Timer_Tick(object sender, EventArgs e)
