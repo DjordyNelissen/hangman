@@ -1,7 +1,9 @@
 ﻿using Galgje.Controls;
+using Galgje.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -16,15 +18,23 @@ namespace Galgje
     /// </summary>
     public partial class MainWindow : Window
     {
+        #region Consts
+        private const int BaseLives = 10;
+        #endregion
+
         #region Properties
         private string HiddenWord { get; set; }
         private int MinWordCharacters { get; set; } = 3;
-        private int Lives { get; set; } = 10;
+        private int Lives { get; set; } = BaseLives;
+
         private int TimerCount { get; set; } = 10;
+        private bool CanSaveHiscore { get; set; } = true;
 
         private DispatcherTimer Timer { get; set; } = new DispatcherTimer();
         private List<GameCharLabel> GameCharacterLabels { get; } = new List<GameCharLabel>();
         private List<string> Guesses { get; } = new List<string>();
+        private static List<HiscoreRecord> Hiscores { get; }  = new List<HiscoreRecord>();
+
         #endregion
 
         #region Constructors
@@ -61,6 +71,7 @@ namespace Galgje
                 UpdateAfterGuess();
             }
         }
+
         private void ResetTimer()
         {
             Timer.Stop();
@@ -83,6 +94,7 @@ namespace Galgje
             StartGame();
             SetDefaultBorder(sender as Label);
         }
+
         private void BtnReset_Click(object sender, RoutedEventArgs e)
         {
             SetActiveBorder(sender as Label);
@@ -101,6 +113,7 @@ namespace Galgje
         {
             SetActiveBorder(sender as Label);
         }
+
         private void Btn_ResetHover(object sender, MouseEventArgs e)
         {
             SetDefaultBorder(sender as Label);
@@ -131,6 +144,7 @@ namespace Galgje
             else
                 BtnStart.IsEnabled = false;
         }
+
         private void InputField_KeyDown(object sender, KeyEventArgs e)
         {
             HideErrorMessage();
@@ -144,6 +158,11 @@ namespace Galgje
                     EscapeHandler();
                     break;
             }
+        }
+
+        private void MenuHiscore_Click(object sender, RoutedEventArgs e)
+        {
+            ShowHiscoreMessageBox();
         }
         #endregion
 
@@ -189,12 +208,13 @@ namespace Galgje
             Statistics.Visibility = Visibility.Visible;
 
             LabelHeader.Text = "Geef een letter of een woord in.";
-            LabelBadGuessesCharacters.Content = "";
+            LabelBadGuessesCharacters.Content = String.Empty;
             LabelLives.Content = Lives;
 
             BtnReset.IsEnabled = true;
 
             HiddenWord = InputField.Text.ToLower();
+            CanSaveHiscore = true;
 
             ClearAndFocusInput();
             CreateGamePanel();
@@ -219,7 +239,7 @@ namespace Galgje
             InputField.IsEnabled = true;
 
             HiddenWord = null;
-            Lives = 10;
+            Lives = BaseLives;
 
             GameCharacterLabels.Clear();
             Guesses.Clear();
@@ -238,6 +258,8 @@ namespace Galgje
             if(won)
             {
                 LabelHeader.Text = "Hoera! Je hebt het woord geraden!";
+                string name = AskForName();
+                SaveHiscore(name);
             } else
             {
                 LabelHeader.Text = "Jammer! Je hebt het woord niet geraden.";
@@ -259,7 +281,44 @@ namespace Galgje
                     }
                 }
             }
+        }
 
+        private void SaveHiscore(string name)
+        {
+            if (CanSaveHiscore && !String.IsNullOrWhiteSpace(name))
+            {
+                Hiscores.Add(new HiscoreRecord
+                {
+                    Name = name,
+                    Lives = BaseLives - Lives,
+                    DateTime = DateTime.Now
+                });
+            }
+        }
+
+        private void ShowHiscoreMessageBox()
+        {
+            StringBuilder builder = new StringBuilder();
+
+            var hiscores = Hiscores
+                .OrderBy(hiscore => hiscore.Lives)
+                .Take(5)
+                .ToList();
+
+            foreach (var hiscore in hiscores)
+            {
+                builder.AppendLine(String.Format("{0} - {1} - {2}",
+                    hiscore.Name.PadLeft(14),
+                    $"{hiscore.Lives} levens",
+                    hiscore.DateTime.ToString("T")));
+            }
+
+            MessageBox.Show(builder.ToString());
+        }
+
+        private string AskForName()
+        {
+            return Microsoft.VisualBasic.Interaction.InputBox("Geef je naam in.", "In hiscores opslaan.");
         }
 
         private void Guess(string guess)
