@@ -2,17 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 
 namespace Galgje
@@ -26,7 +20,6 @@ namespace Galgje
         private string HiddenWord { get; set; }
         private int MinWordCharacters { get; set; } = 3;
         private int Lives { get; set; } = 10;
-        private int Seconds { get; set; } = 10;
         private int TimerCount { get; set; } = 10;
 
         private DispatcherTimer Timer { get; set; } = new DispatcherTimer();
@@ -49,7 +42,7 @@ namespace Galgje
         {
             if(TimerCount <= 0)
             {
-                GameGrid.Background = new SolidColorBrush(Color.FromRgb(250, 250, 250));
+                GameWindow.Background = new SolidColorBrush(Color.FromRgb(250, 250, 250));
                 ResetAndStartTimer();
                 InputField.IsEnabled = true;
                 InputField.Clear();
@@ -62,7 +55,7 @@ namespace Galgje
 
             if(TimerCount <= 0)
             {
-                GameGrid.Background = new SolidColorBrush(Color.FromRgb(255, 80, 80));
+                GameWindow.Background = new SolidColorBrush(Color.FromRgb(255, 80, 80));
                 InputField.IsEnabled = false;
                 Lives--;
                 UpdateAfterGuess();
@@ -73,7 +66,7 @@ namespace Galgje
             Timer.Stop();
             TimerCount = 10;
             LabelTimeLimit.Content = TimerCount;
-            GameGrid.Background = new SolidColorBrush(Color.FromRgb(250, 250, 250));
+            GameWindow.Background = new SolidColorBrush(Color.FromRgb(250, 250, 250));
         }
 
         private void ResetAndStartTimer()

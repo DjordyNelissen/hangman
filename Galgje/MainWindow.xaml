@@ -6,7 +6,9 @@
         xmlns:local="clr-namespace:Galgje" 
         xmlns:controls="clr-namespace:Galgje.Controls"
         mc:Ignorable="d"
-        Title="MainWindow" Height="600" Width="800">
+        Background="#FAFAFA"
+        x:Name="GameWindow"
+        Title="MainWindow" Width="800" Height="650">
     <Window.Resources>
         <Style x:Key="BtnLabel" TargetType="Label">
             <!--<Setter Property="OverridesDefaultStyle" Value="True" />-->
@@ -19,124 +21,144 @@
             <Setter Property="Background" Value="#EFEFEF" />
         </Style>
     </Window.Resources>
-    <Grid x:Name="GameGrid" Background="#FAFAFA">
+    <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="10" />
-            <RowDefinition Height="80" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="10" />
-            <RowDefinition Height="100" />
-            <RowDefinition Height="50" />
             <RowDefinition Height="20" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <!--HeaderText-->
-        <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="500" Margin="10">
-            <Viewbox>
-                <TextBlock x:Name="LabelHeader" Text="Geef een geheim woord in" Visibility="Visible" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" />
-            </Viewbox>
-        </StackPanel>
-        <!--End HeaderText-->
-        <!--Stats-->
-        <Grid VerticalAlignment="Center" Grid.Row="2" Grid.Column="0">
-            <Grid.RowDefinitions>
-                <RowDefinition />
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition Width="10" />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-            <Image x:Name="HangmanImage" Grid.Column="0" MaxHeight="200" MaxWidth="200" HorizontalAlignment="Right" Visibility="Hidden" Source="/Images/hangman_10.png" />
-            <!--Statistics-->
-            <StackPanel Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Center" MaxWidth="400">
-                <Viewbox Stretch="Uniform">
-                    <Grid x:Name="Statistics" Visibility="Hidden">
-                        <Grid.RowDefinitions>
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="2*" />
-                            <ColumnDefinition Width="250" />
-                        </Grid.ColumnDefinitions>
-                        <StackPanel MaxWidth="100" Grid.Row="0" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
-                            <Label Content="Aantal levens:" />
-                            <Label x:Name="LabelLives" Content="" />
-                        </StackPanel>
-                        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
-                            <Label Content="Foutieve letters:" />
-                            <Label x:Name="LabelBadGuessesCharacters" Content="" />
-                        </StackPanel>
-                        <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
-                            <Label Content="Tijd:" />
-                            <Label x:Name="LabelTimeLimit" Content="" />
-                        </StackPanel>
-                    </Grid>
-                </Viewbox>
-            </StackPanel>
-            <!--End Statistics-->
-        </Grid>
-        <!--End Stats-->
-        <!--GameBoard-->
-        <StackPanel VerticalAlignment="Bottom" Grid.Row="3" Grid.Column="0" MaxWidth="700" Margin="0,30">
-            <controls:AlignWrapPanel x:Name="GamePanel"  HorizontalContentAlignment="Center" />
-        </StackPanel>
-        <!--End GameBoard-->
-        <!--InputField-->
-        <Grid Grid.Row="5" Grid.Column="0" VerticalAlignment="Top">
-            <Grid.RowDefinitions>
-                <RowDefinition />
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*" />
-                <ColumnDefinition Width="11*" />
-                <ColumnDefinition Width="2* "/>
-            </Grid.ColumnDefinitions>
-            <StackPanel Grid.Row="0" Grid.Column="1">
-                <TextBox Padding="5,5,5,5" TextChanged="InputField_TextChanged" KeyDown="InputField_KeyDown" x:Name="InputField" Background="Transparent" BorderBrush="#EEE" FontSize="25" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderThickness="0,0,0,1"/>
-                <Label Visibility="Hidden" Margin="0,5,0,0" HorizontalContentAlignment="Center" x:Name="LabelError" Foreground="#FFAE1B1B" />
-            </StackPanel>
-        </Grid>
-        <!--End InputField-->
-        <!--Buttons-->
-            <Grid Grid.Row="6" Grid.Column="0">
+        <DockPanel Grid.Row="0" Grid.Column="0">
+            <Menu DockPanel.Dock="Top">
+                <MenuItem Header="Spel afsluiten" />
+                <MenuItem Header="Highscores opvragen" />
+                <MenuItem Header="Nieuw spel starten" />
+                <MenuItem Header="Een hint vragen" />
+                <MenuItem Header="Timer instellen" />
+            </Menu>
+        </DockPanel>
+        <ScrollViewer Grid.Row="1" Grid.Column="0">
+            <Grid x:Name="GameGrid" ScrollViewer.CanContentScroll="True">
                 <Grid.RowDefinitions>
-                    <RowDefinition />
+                    <RowDefinition Height="10" />
+                    <RowDefinition Height="80" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="10" />
+                    <RowDefinition Height="100" />
+                    <RowDefinition Height="50" />
+                    <RowDefinition Height="20" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*" />
-                    <ColumnDefinition Width="5*" />
-                    <ColumnDefinition Width="1*" />
-                    <ColumnDefinition Width="5*" />
-                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                <Label x:Name="BtnStart" Grid.Row="0" Grid.Column="1" MouseEnter="Btn_Hover" MouseUp="BtnStart_Click" MouseLeave="Btn_ResetHover" IsEnabled="False" Style="{ StaticResource BtnLabel }" >
+                <!--HeaderText-->
+                <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="500" Margin="10">
                     <Viewbox>
-                        <TextBlock Margin="5">
-                            Verberg Woord
-                        </TextBlock>                    
+                        <TextBlock x:Name="LabelHeader" Text="Geef een geheim woord in" Visibility="Visible" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" />
                     </Viewbox>
-                </Label>
-                <Label x:Name="BtnGuess" Grid.Row="0" Grid.Column="1" MouseEnter="Btn_Hover" MouseUp="BtnGuess_Click" MouseLeave="Btn_ResetHover" Visibility="Hidden" Style="{ StaticResource BtnLabel }">
-                    <Viewbox>
-                    <TextBlock Margin="5">
-                            Raad
-                        </TextBlock>
-                    </Viewbox>
-                </Label>
-                <Label x:Name="BtnReset" Grid.Row="0" Grid.Column="3" MouseEnter="Btn_Hover" MouseUp="BtnReset_Click" MouseLeave="Btn_ResetHover" IsEnabled="False" Style="{ StaticResource BtnLabel }">
-                <Viewbox>
-                    <TextBlock Margin="5">
+                </StackPanel>
+                <!--End HeaderText-->
+                <!--Stats-->
+                <Grid VerticalAlignment="Center" Grid.Row="2" Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="10" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Image x:Name="HangmanImage" Grid.Column="0" MaxHeight="200" MaxWidth="200" HorizontalAlignment="Right" Visibility="Hidden" Source="/Images/hangman_10.png" />
+                    <!--Statistics-->
+                    <StackPanel Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Center" MaxWidth="400">
+                        <Viewbox Stretch="Uniform">
+                            <Grid x:Name="Statistics" Visibility="Hidden">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*" />
+                                    <ColumnDefinition Width="250" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel MaxWidth="100" Grid.Row="0" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                    <Label Content="Aantal levens:" />
+                                    <Label x:Name="LabelLives" Content="" />
+                                </StackPanel>
+                                <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                    <Label Content="Foutieve letters:" />
+                                    <Label x:Name="LabelBadGuessesCharacters" Content="" />
+                                </StackPanel>
+                                <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                    <Label Content="Tijd:" />
+                                    <Label x:Name="LabelTimeLimit" Content="" />
+                                </StackPanel>
+                            </Grid>
+                        </Viewbox>
+                    </StackPanel>
+                    <!--End Statistics-->
+                </Grid>
+                <!--End Stats-->
+                <!--GameBoard-->
+                <StackPanel VerticalAlignment="Bottom" Grid.Row="3" Grid.Column="0" MaxWidth="700" Margin="0,30">
+                    <controls:AlignWrapPanel x:Name="GamePanel"  HorizontalContentAlignment="Center" />
+                </StackPanel>
+                <!--End GameBoard-->
+                <!--InputField-->
+                <Grid Grid.Row="5" Grid.Column="0" VerticalAlignment="Top">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="11*" />
+                        <ColumnDefinition Width="2* "/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Row="0" Grid.Column="1">
+                        <TextBox Padding="5,5,5,5" TextChanged="InputField_TextChanged" KeyDown="InputField_KeyDown" x:Name="InputField" Background="Transparent" BorderBrush="#EEE" FontSize="25" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderThickness="0,0,0,1"/>
+                        <Label Visibility="Hidden" Margin="0,5,0,0" HorizontalContentAlignment="Center" x:Name="LabelError" Foreground="#FFAE1B1B" />
+                    </StackPanel>
+                </Grid>
+                <!--End InputField-->
+                <!--Buttons-->
+                <Grid Grid.Row="6" Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="5*" />
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="5*" />
+                        <ColumnDefinition Width="2*" />
+                    </Grid.ColumnDefinitions>
+                    <Label x:Name="BtnStart" Grid.Row="0" Grid.Column="1" MouseEnter="Btn_Hover" MouseUp="BtnStart_Click" MouseLeave="Btn_ResetHover" IsEnabled="False" Style="{ StaticResource BtnLabel }" >
+                        <Viewbox>
+                            <TextBlock Margin="5">
+                        Verberg Woord
+                            </TextBlock>
+                        </Viewbox>
+                    </Label>
+                    <Label x:Name="BtnGuess" Grid.Row="0" Grid.Column="1" MouseEnter="Btn_Hover" MouseUp="BtnGuess_Click" MouseLeave="Btn_ResetHover" Visibility="Hidden" Style="{ StaticResource BtnLabel }">
+                        <Viewbox>
+                            <TextBlock Margin="5">
+                        Raad
+                            </TextBlock>
+                        </Viewbox>
+                    </Label>
+                    <Label x:Name="BtnReset" Grid.Row="0" Grid.Column="3" MouseEnter="Btn_Hover" MouseUp="BtnReset_Click" MouseLeave="Btn_ResetHover" IsEnabled="False" Style="{ StaticResource BtnLabel }">
+                        <Viewbox>
+                            <TextBlock Margin="5">
                             Nieuw spel
-                    </TextBlock>
-                </Viewbox>
-            </Label>
-        </Grid>
-        <!--End Buttons-->
+                            </TextBlock>
+                        </Viewbox>
+                    </Label>
+                </Grid>
+                <!--End Buttons-->
+            </Grid>
+        </ScrollViewer>
     </Grid>
 </Window>
