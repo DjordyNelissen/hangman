@@ -20,14 +20,15 @@ namespace Galgje
     {
         #region Consts
         private const int BaseLives = 10;
+        private const int BaseTimerCount = 10;
         #endregion
 
         #region Properties
         private string HiddenWord { get; set; }
         private int MinWordCharacters { get; set; } = 3;
         private int Lives { get; set; } = BaseLives;
-
-        private int TimerCount { get; set; } = 10;
+        private int TimerSeconds { get; set; } = BaseTimerCount;
+        private int TimerCount { get; set; } = BaseTimerCount;
         private bool CanSaveHiscore { get; set; } = true;
         private GameMode GameMode { get; set; } = GameMode.Multiplayer;
 
@@ -76,7 +77,7 @@ namespace Galgje
         private void ResetTimer()
         {
             Timer.Stop();
-            TimerCount = 10;
+            TimerCount = TimerSeconds;
             LabelTimeLimit.Content = TimerCount;
             GameWindow.Background = new SolidColorBrush(Color.FromRgb(250, 250, 250));
         }
@@ -185,6 +186,12 @@ namespace Galgje
         {
             SetGameMode(GameMode.Multiplayer);
         }
+
+        private void MenuTimer_Click(object sender, RoutedEventArgs e)
+        {
+            var seconds = ShowTimeLimitMessageBox();
+            ModifyTimeLimit(seconds);
+        }
         #endregion
 
         #region KeyHandlers
@@ -225,6 +232,8 @@ namespace Galgje
         {
 
             InputField.IsEnabled = true;
+            InputField.Visibility = Visibility.Visible;
+
 
             BtnStart.Visibility = Visibility.Hidden;
             BtnGuess.Visibility = Visibility.Visible;
@@ -238,6 +247,7 @@ namespace Galgje
             BtnReset.IsEnabled = true;
             MenuReset.IsEnabled = true;
             MenuSinglePlayer.IsEnabled = false;
+            MenuTimer.IsEnabled = false;
 
             CanSaveHiscore = true;
 
@@ -275,8 +285,7 @@ namespace Galgje
 
             MenuReset.IsEnabled = false;
             MenuSinglePlayer.IsEnabled = true;
-
-            InputField.IsEnabled = true;
+            MenuTimer.IsEnabled = true;
 
             HiddenWord = null;
             Lives = BaseLives;
@@ -288,6 +297,7 @@ namespace Galgje
             ClearAndFocusInput();
             ResetTimer();
             SetGameMode(GameMode);
+            HideErrorMessage();
         }
 
         private void EndGame(bool won)
@@ -547,6 +557,7 @@ namespace Galgje
 
         private void SetGameModeMultiplayer()
         {
+            InputField.Visibility = Visibility.Visible;
             InputField.IsEnabled = true;
             InputField.Focus();
 
@@ -556,11 +567,32 @@ namespace Galgje
 
         private void SetGameModeSingleplayer()
         {
+            InputField.Visibility = Visibility.Hidden;
             InputField.IsEnabled = false;
             InputField.Text = String.Empty;
 
             BtnStartContent.Text = "Random woord";
             BtnStart.IsEnabled = true;
+        }
+
+        private int ShowTimeLimitMessageBox()
+        {
+            var answer = Microsoft.VisualBasic.Interaction.InputBox("Geef een limiet tussen 5 en 20 in.", "Timer aanpassen");
+            if (String.IsNullOrWhiteSpace(answer))
+                return TimerSeconds;
+
+            int limit;
+            int.TryParse(answer, out limit);
+
+            if(limit < 5 || limit > 20)
+                limit = BaseTimerCount;
+
+            return limit;
+        }
+
+        private void ModifyTimeLimit(int seconds)
+        {
+            TimerSeconds = seconds;
         }
         #endregion
     }

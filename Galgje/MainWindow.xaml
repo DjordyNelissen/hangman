@@ -36,7 +36,7 @@
                     <MenuItem Header="Highscores opvragen" Click="MenuHiscore_Click" />
                     <MenuItem Header="Nieuw spel" Click="MenuReset_Click" x:Name="MenuReset" IsEnabled="False" />
                     <MenuItem Header="Een hint vragen" />
-                    <MenuItem Header="Timer instellen" />
+                    <MenuItem Header="Timer instellen" Click="MenuTimer_Click" x:Name="MenuTimer" />
                 </MenuItem>
                 <MenuItem Header="Singleplayer" IsCheckable="True" x:Name="MenuSinglePlayer" Checked="MenuSinglePlayer_Checked" Unchecked="MenuSinglePlayer_Unchecked" />
             </Menu>
