@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         Background="#FAFAFA"
         x:Name="GameWindow"
-        Title="MainWindow" Width="800" Height="650" FontFamily="Arial">
+        Title="MainWindow" Width="800" Height="700" FontFamily="Arial">
     <Window.Resources>
         <Style x:Key="BtnLabel" TargetType="Label">
             <!--<Setter Property="OverridesDefaultStyle" Value="True" />-->
@@ -31,11 +31,14 @@
         </Grid.ColumnDefinitions>
         <DockPanel Grid.Row="0" Grid.Column="0">
             <Menu DockPanel.Dock="Top">
-                <MenuItem Header="Spel afsluiten" />
-                <MenuItem Header="Highscores opvragen" Click="MenuHiscore_Click" />
-                <MenuItem Header="Nieuw spel starten" />
-                <MenuItem Header="Een hint vragen" />
-                <MenuItem Header="Timer instellen" />
+                <MenuItem Header="Spel">
+                    <MenuItem Header="Spel afsluiten" Click="MenuClose_Click" />
+                    <MenuItem Header="Highscores opvragen" Click="MenuHiscore_Click" />
+                    <MenuItem Header="Nieuw spel" Click="MenuReset_Click" x:Name="MenuReset" IsEnabled="False" />
+                    <MenuItem Header="Een hint vragen" />
+                    <MenuItem Header="Timer instellen" />
+                </MenuItem>
+                <MenuItem Header="Singleplayer" IsCheckable="True" x:Name="MenuSinglePlayer" Checked="MenuSinglePlayer_Checked" Unchecked="MenuSinglePlayer_Unchecked" />
             </Menu>
         </DockPanel>
         <ScrollViewer Grid.Row="1" Grid.Column="0">
@@ -84,9 +87,9 @@
                                     <ColumnDefinition Width="2*" />
                                     <ColumnDefinition Width="250" />
                                 </Grid.ColumnDefinitions>
-                                <StackPanel MaxWidth="100" Grid.Row="0" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
                                     <Label Content="Aantal levens:" />
-                                    <Label x:Name="LabelLives" Content="" />
+                                    <Label x:Name="LabelLives" Content="10" />
                                 </StackPanel>
                                 <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
                                     <Label Content="Foutieve letters:" />
@@ -137,23 +140,17 @@
                     </Grid.ColumnDefinitions>
                     <Label x:Name="BtnStart" Grid.Row="0" Grid.Column="1" MouseEnter="Btn_Hover" MouseUp="BtnStart_Click" MouseLeave="Btn_ResetHover" IsEnabled="False" Style="{ StaticResource BtnLabel }" >
                         <Viewbox>
-                            <TextBlock Margin="5">
-                        Verberg Woord
-                            </TextBlock>
+                            <TextBlock x:Name="BtnStartContent" Margin="5" Text="Verberg Woord" />
                         </Viewbox>
                     </Label>
                     <Label x:Name="BtnGuess" Grid.Row="0" Grid.Column="1" MouseEnter="Btn_Hover" MouseUp="BtnGuess_Click" MouseLeave="Btn_ResetHover" Visibility="Hidden" Style="{ StaticResource BtnLabel }">
                         <Viewbox>
-                            <TextBlock Margin="5">
-                        Raad
-                            </TextBlock>
+                            <TextBlock Margin="5" Text="Raad" />
                         </Viewbox>
                     </Label>
                     <Label x:Name="BtnReset" Grid.Row="0" Grid.Column="3" MouseEnter="Btn_Hover" MouseUp="BtnReset_Click" MouseLeave="Btn_ResetHover" IsEnabled="False" Style="{ StaticResource BtnLabel }">
                         <Viewbox>
-                            <TextBlock Margin="5">
-                            Nieuw spel
-                            </TextBlock>
+                            <TextBlock Margin="5" Text="Nieuw spel" />
                         </Viewbox>
                     </Label>
                 </Grid>

@@ -29,6 +29,7 @@ namespace Galgje
 
         private int TimerCount { get; set; } = 10;
         private bool CanSaveHiscore { get; set; } = true;
+        private GameMode GameMode { get; set; } = GameMode.Multiplayer;
 
         private DispatcherTimer Timer { get; set; } = new DispatcherTimer();
         private List<GameCharLabel> GameCharacterLabels { get; } = new List<GameCharLabel>();
@@ -164,6 +165,26 @@ namespace Galgje
         {
             ShowHiscoreMessageBox();
         }
+
+        private void MenuReset_Click(object sender, RoutedEventArgs e)
+        {
+            ResetGame();
+        }
+
+        private void MenuClose_Click(object sender, RoutedEventArgs e)
+        {
+            CloseGame();
+        }
+
+        private void MenuSinglePlayer_Checked(object sender, RoutedEventArgs e)
+        {
+            SetGameMode(GameMode.Singleplayer);
+        }
+
+        private void MenuSinglePlayer_Unchecked(object sender, RoutedEventArgs e)
+        {
+            SetGameMode(GameMode.Multiplayer);
+        }
         #endregion
 
         #region KeyHandlers
@@ -191,7 +212,7 @@ namespace Galgje
         {
             if(HiddenWord == null)
             {
-                Close();
+                CloseGame();
             } else
             {
                 ResetGame();
@@ -202,6 +223,9 @@ namespace Galgje
         #region Methods
         private void StartGame()
         {
+
+            InputField.IsEnabled = true;
+
             BtnStart.Visibility = Visibility.Hidden;
             BtnGuess.Visibility = Visibility.Visible;
 
@@ -212,9 +236,22 @@ namespace Galgje
             LabelLives.Content = Lives;
 
             BtnReset.IsEnabled = true;
+            MenuReset.IsEnabled = true;
+            MenuSinglePlayer.IsEnabled = false;
 
-            HiddenWord = InputField.Text.ToLower();
             CanSaveHiscore = true;
+
+            switch (GameMode)
+            {
+                case GameMode.Multiplayer:
+                    HiddenWord = InputField.Text.ToLower();
+                    break;
+                case GameMode.Singleplayer:
+                    HiddenWord = WordGenerator.Random();
+                    break;
+                default:
+                    break;
+            }
 
             ClearAndFocusInput();
             CreateGamePanel();
@@ -236,6 +273,9 @@ namespace Galgje
             BtnReset.IsEnabled = false;
             BtnStart.IsEnabled = false;
 
+            MenuReset.IsEnabled = false;
+            MenuSinglePlayer.IsEnabled = true;
+
             InputField.IsEnabled = true;
 
             HiddenWord = null;
@@ -247,6 +287,7 @@ namespace Galgje
 
             ClearAndFocusInput();
             ResetTimer();
+            SetGameMode(GameMode);
         }
 
         private void EndGame(bool won)
@@ -283,6 +324,15 @@ namespace Galgje
             }
         }
 
+        private void CloseGame()
+        {
+            MessageBoxResult messageBoxResult = MessageBox.Show("Bent u zeker?", "Spel afsluiten", MessageBoxButton.YesNo);
+            if (messageBoxResult == MessageBoxResult.Yes)
+            {
+                Close();
+            }
+        }
+
         private void SaveHiscore(string name)
         {
             if (CanSaveHiscore && !String.IsNullOrWhiteSpace(name))
@@ -309,8 +359,13 @@ namespace Galgje
             {
                 builder.AppendLine(String.Format("{0} - {1} - {2}",
                     hiscore.Name.PadLeft(14),
-                    $"{hiscore.Lives} levens",
+                    $"{hiscore.Lives} leven(s)",
                     hiscore.DateTime.ToString("T")));
+            }
+
+            if(builder.Length == 0)
+            {
+                builder.AppendLine("Geen hiscores gevonden, start een nieuw spel!");
             }
 
             MessageBox.Show(builder.ToString());
@@ -471,6 +526,41 @@ namespace Galgje
         private void HideErrorMessage()
         {
             LabelError.Visibility = Visibility.Hidden;
+        }
+
+        private void SetGameMode(GameMode gameMode)
+        {
+            GameMode = gameMode;
+
+            switch (gameMode)
+            {
+                case GameMode.Multiplayer:
+                    SetGameModeMultiplayer();
+                    break;
+                case GameMode.Singleplayer:
+                    SetGameModeSingleplayer();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void SetGameModeMultiplayer()
+        {
+            InputField.IsEnabled = true;
+            InputField.Focus();
+
+            BtnStartContent.Text = "Verberg Woord";
+            BtnStart.IsEnabled = false;
+        }
+
+        private void SetGameModeSingleplayer()
+        {
+            InputField.IsEnabled = false;
+            InputField.Text = String.Empty;
+
+            BtnStartContent.Text = "Random woord";
+            BtnStart.IsEnabled = true;
         }
         #endregion
     }
