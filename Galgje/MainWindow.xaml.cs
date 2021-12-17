@@ -192,6 +192,9 @@ namespace Galgje
             var seconds = ShowTimeLimitMessageBox();
             ModifyTimeLimit(seconds);
         }
+        private void MenuHint_Click(object sender, RoutedEventArgs e)
+        {
+        }
         #endregion
 
         #region KeyHandlers
@@ -246,6 +249,7 @@ namespace Galgje
 
             BtnReset.IsEnabled = true;
             MenuReset.IsEnabled = true;
+            MenuHint.IsEnabled = true;
             MenuSinglePlayer.IsEnabled = false;
             MenuTimer.IsEnabled = false;
 
@@ -286,6 +290,7 @@ namespace Galgje
             MenuReset.IsEnabled = false;
             MenuSinglePlayer.IsEnabled = true;
             MenuTimer.IsEnabled = true;
+            MenuHint.IsEnabled = false;
 
             HiddenWord = null;
             Lives = BaseLives;
