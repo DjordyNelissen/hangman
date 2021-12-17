@@ -37,6 +37,8 @@ namespace Galgje
         private List<string> Guesses { get; } = new List<string>();
         private static List<HiscoreRecord> Hiscores { get; }  = new List<HiscoreRecord>();
 
+        private List<char> Hints { get; } = new List<char>();
+
         #endregion
 
         #region Constructors
@@ -192,8 +194,10 @@ namespace Galgje
             var seconds = ShowTimeLimitMessageBox();
             ModifyTimeLimit(seconds);
         }
+
         private void MenuHint_Click(object sender, RoutedEventArgs e)
         {
+            ShowHintMessageBox();
         }
         #endregion
 
@@ -236,7 +240,6 @@ namespace Galgje
 
             InputField.IsEnabled = true;
             InputField.Visibility = Visibility.Visible;
-
 
             BtnStart.Visibility = Visibility.Hidden;
             BtnGuess.Visibility = Visibility.Visible;
@@ -297,6 +300,7 @@ namespace Galgje
 
             GameCharacterLabels.Clear();
             Guesses.Clear();
+            Hints.Clear();
             GamePanel.Children.Clear();
 
             ClearAndFocusInput();
@@ -314,8 +318,11 @@ namespace Galgje
             if(won)
             {
                 LabelHeader.Text = "Hoera! Je hebt het woord geraden!";
-                string name = AskForName();
-                SaveHiscore(name);
+                if(CanSaveHiscore)
+                {
+                    string name = AskForName();
+                    SaveHiscore(name);
+                }
             } else
             {
                 LabelHeader.Text = "Jammer! Je hebt het woord niet geraden.";
@@ -350,7 +357,7 @@ namespace Galgje
 
         private void SaveHiscore(string name)
         {
-            if (CanSaveHiscore && !String.IsNullOrWhiteSpace(name))
+            if (!String.IsNullOrWhiteSpace(name))
             {
                 Hiscores.Add(new HiscoreRecord
                 {
@@ -463,6 +470,9 @@ namespace Galgje
             {
                 Lives--;
                 LabelBadGuessesCharacters.Content = $"{LabelBadGuessesCharacters.Content} {character}";
+
+                if(!Hints.Contains(character))
+                    Hints.Add(character);
             }
         }
 
@@ -582,15 +592,14 @@ namespace Galgje
 
         private int ShowTimeLimitMessageBox()
         {
-            var answer = Microsoft.VisualBasic.Interaction.InputBox("Geef een limiet tussen 5 en 20 in.", "Timer aanpassen");
-            if (String.IsNullOrWhiteSpace(answer))
-                return TimerSeconds;
-
             int limit;
-            int.TryParse(answer, out limit);
 
-            if(limit < 5 || limit > 20)
-                limit = BaseTimerCount;
+            do
+            {
+                var answer = Microsoft.VisualBasic.Interaction.InputBox("Geef een limiet tussen 5 en 20 in.", "Timer aanpassen");
+                int.TryParse(answer, out limit);
+
+            } while (limit < 5 || limit > 20);
 
             return limit;
         }
@@ -598,6 +607,41 @@ namespace Galgje
         private void ModifyTimeLimit(int seconds)
         {
             TimerSeconds = seconds;
+        }
+
+        private char[] GetAlphabet()
+        {
+            var alphabet = Enumerable.Range('a', 26)
+                .Select(i => (char)i)
+                .ToArray();
+
+            return alphabet;
+        }
+
+        private char GetRandomLetterFromArrayNotInWord(char[] alphabet, string word, List<char> exclude)
+        {
+            var random = new Random();
+            var notInWord = alphabet.Where(x => !word.Contains(x) && !exclude.Contains(x)).ToList();
+
+            if (notInWord.Count() == 0)
+                return ' ';
+
+            return notInWord.ElementAt(random.Next(0, notInWord.Count()));
+        }
+
+        private void ShowHintMessageBox()
+        {
+            var randomLetter = GetRandomLetterFromArrayNotInWord(GetAlphabet(), HiddenWord, Hints);
+
+            if(!char.IsWhiteSpace(randomLetter))
+            {
+                Hints.Add(randomLetter);
+                CanSaveHiscore = false;
+                MessageBox.Show($"Deze letter komt niet voor in het woord: {randomLetter}", "Hint");
+            } else
+            {
+                MessageBox.Show($"Sorry, ik kan geen hint meer geven :(", "Hint");
+            }
         }
         #endregion
     }
